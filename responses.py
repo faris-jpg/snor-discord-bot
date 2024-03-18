@@ -1,5 +1,6 @@
 from random import choice, randint
 from finance import Finance
+from outputs import view_entries
 
 
 def get_response(user_input: str, user_id: int) -> str:
@@ -32,7 +33,7 @@ def get_response(user_input: str, user_id: int) -> str:
         return f'Your new balance is {Finance().get_balance(user_id)}'
     elif 'view' in lowered:
         entries: list = Finance().view_entries(user_id)
-        return '\n'.join([f'id: {entry["id"]} {entry["date"]}: {entry["desc"]} {entry["amount"]}' for entry in entries])
+        return view_entries(entries)
     else:
         return choice(['Snor?',
                        'Snor doesnt understand',

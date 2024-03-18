@@ -1,2 +1,3 @@
-data/finance.json
+finance.json
 venv/*
+.env
