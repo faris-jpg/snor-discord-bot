@@ -15,9 +15,13 @@ class Finance:
         return self.balance
     
     def income(self, user_id: int, amount: float, desc: str) -> None:
+        if len(desc) > 8:
+            raise ValueError('Snor... Description is too long')
         self.create_entry(user_id, amount, 'income', desc)
 
     def expense(self, user_id: int, amount: float, desc: str) -> None:
+        if len(desc) > 8:
+            raise ValueError('Snor... Description is too long')
         self.create_entry(user_id, -amount, 'expense', desc)
     
     def create_entry(self, user_id: int, amount: float, category: str, desc: str) -> None:

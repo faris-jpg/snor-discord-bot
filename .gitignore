@@ -1,3 +1,4 @@
 finance.json
 venv/*
 .env
+__pycache__/*
