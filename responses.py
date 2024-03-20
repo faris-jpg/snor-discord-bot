@@ -5,6 +5,11 @@ from utilities import view_entries
 
 def get_response(user_input: str, user_id: int) -> str:
     lowered: str = user_input.lower()
+    
+    if 'qayyim' in lowered:
+        return '<@853570255145664536>'
+    if 'faris' in lowered:
+        return '<@226008559467364353>'
 
     if lowered[0] != '!':
         raise ValueError('Snor not found')
@@ -30,6 +35,7 @@ def get_response(user_input: str, user_id: int) -> str:
                 return e
             return 'Snor... the correct syntax is "!exp [desc] [amount]"'
         except Exception as e:
+            print(e)
             return 'Snor... an error has occured"'
         return f'Your new balance is {Finance().get_balance(user_id)}'
     elif 'exp' in lowered:
@@ -43,6 +49,7 @@ def get_response(user_input: str, user_id: int) -> str:
                 return e
             return 'Snor... the correct syntax is "!exp [desc] [amount]"'
         except Exception as e:
+            print(e)
             return 'Snor... an error has occured"'
         return f'Your new balance is {Finance().get_balance(user_id)}'
     elif 'view' in lowered:

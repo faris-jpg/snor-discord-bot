@@ -1,6 +1,5 @@
 from datetime import datetime
 
-# def check_syntax
 
 def view_entries(entries: list) -> str:
     balance: float = 0
