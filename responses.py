@@ -1,9 +1,10 @@
 from random import choice, randint
 from finance import Finance
-from utilities import view_entries
+from utilities import format_list
+from discord import Message, Client
 
 
-def get_response(user_input: str, user_id: int) -> str:
+async def get_response(user_input: str, user_id: int, message: Message, client: Client) -> str:
     lowered: str = user_input.lower()
     
     if 'qayyim' in lowered:
@@ -31,20 +32,7 @@ def get_response(user_input: str, user_id: int) -> str:
             amount: float = float(lowered[1])
             Finance().income(user_id, amount, desc)
         except ValueError as e:
-            if str(e) == 'Snor... Description is too long':
-                return e
-            return 'Snor... the correct syntax is "!exp [desc] [amount]"'
-        except Exception as e:
             print(e)
-            return 'Snor... an error has occured"'
-        return f'Your new balance is {Finance().get_balance(user_id)}'
-    elif 'exp' in lowered:
-        try:
-            lowered = lowered.split(' ')[1:]
-            desc: str = lowered[0]
-            amount: float = float(lowered[1])
-            Finance().expense(user_id, amount, desc)
-        except ValueError as e:
             if str(e) == 'Snor... Description is too long':
                 return e
             return 'Snor... the correct syntax is "!exp [desc] [amount]"'
@@ -54,7 +42,7 @@ def get_response(user_input: str, user_id: int) -> str:
         return f'Your new balance is {Finance().get_balance(user_id)}'
     elif 'view' in lowered:
         entries: list = Finance().view_entries(user_id)
-        return view_entries(entries)
+        return format_list(entries)
     elif 'flip' in lowered:
         return choice(['Heads', 'Tails'])
     elif 'say' in lowered:

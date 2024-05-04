@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from responses import get_response
+import finance_handler as fh
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
@@ -11,7 +12,7 @@ intents: Intents = Intents.default()
 intents.message_content = True 
 client: Client = Client(intents=intents)
 
-async def send_message(message: Message, user_message: str, user_id: int) -> None:
+async def send_message(message: Message, user_message: str, user_id: int, client: Client) -> None:
     if not user_message:
         print('Message was empty because intents was disabled')
         return
@@ -19,7 +20,7 @@ async def send_message(message: Message, user_message: str, user_id: int) -> Non
         user_message = user_message[1:]
 
     try:
-        response: str = get_response(user_message, user_id)
+        response: str = await get_response(user_message, user_id, message, client)
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)
@@ -38,7 +39,8 @@ async def on_message(message: Message) -> None:
     user_message: str = message.content
     channel: str = str(message.channel)
     print(f'{[{channel}]} {username}: "{user_message}"')
-    await send_message(message, user_message, user_id)
+    await fh.handle_expense(message, client)
+    await send_message(message, user_message, user_id, client)
 
 def main() -> None:
     client.run(token = TOKEN)
