@@ -23,15 +23,17 @@ from discord import Message
 def format_list(entries: list) -> str:
     balance: float = 0
     out : str = '```'
-    out += f'{"+/- "} {"Date":<10} {"Desc":<10} {"Amount":<10}\n'
+    out += f'{"+/- "} {"Date":<9} {"Desc":<8}  {"Amount":<8}\n'
     for entry in entries:
         date_confirm = datetime.strptime(entry['date'], '%Y-%m-%d')
         formatted = date_confirm.strftime('%d/%m/%y')
         out += '[' + ('+' if entry['category'] == 'income' else '-') + ']  '
-        out += f'{formatted:<10} {entry["desc"]:<10} {abs(float(entry["amount"])):<10.2f}\n'
+        out += f'{formatted:<10}'
+        out += entry['desc'] + ''.join(' ' for i in range(8))
+        out += f'{abs(float(entry["amount"])):<10.2f}\n'
         balance += float(entry['amount'])
     out += '-' * 37
-    out += '\nBalance:' + ' ' * 19 +  f'{balance:.2f}'
+    out += '\nBalance:' + ' ' * 17 +  f'{balance:.2f}'
     out += '```'
 
     return out

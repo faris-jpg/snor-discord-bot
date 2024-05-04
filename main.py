@@ -12,15 +12,23 @@ intents: Intents = Intents.default()
 intents.message_content = True 
 client: Client = Client(intents=intents)
 
-async def send_message(message: Message, user_message: str, user_id: int, client: Client) -> None:
-    if not user_message:
-        print('Message was empty because intents was disabled')
-        return
+async def handle_message(message: Message, client: Client) -> None:
+    if message.content.lower().startswith("!"):
+        if message.content.lower().startswith("!exp"):
+            await fh.handle_expense(message, client)
+        elif message.content.lower().startswith("!inc"):
+            await fh.handle_income(message, client)
+        else:
+            await send_message(message, client)
+
+async def send_message(message: Message, client: Client) -> None:
+    user_id: int = message.author.id
+    user_message: str = message.content
     if is_private:= user_message[0] == '?':
         user_message = user_message[1:]
 
     try:
-        response: str = await get_response(user_message, user_id, message, client)
+        response: str = await get_response(message, client)
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)
@@ -34,14 +42,12 @@ async def on_message(message: Message) -> None:
     if message.author == client.user:
         return
 
-    user_id: int = message.author.id
     username: str = str(message.author)
     user_message: str = message.content
     channel: str = str(message.channel)
     print(f'{[{channel}]} {username}: "{user_message}"')
-    await fh.handle_expense(message, client)
-    await send_message(message, user_message, user_id, client)
-
+    await handle_message(message, client)
+    
 def main() -> None:
     client.run(token = TOKEN)
 

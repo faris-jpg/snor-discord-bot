@@ -1,0 +1,1 @@
+print('!exp'.startswith("!exp" or "!inc"))
