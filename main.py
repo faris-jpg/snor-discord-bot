@@ -56,7 +56,7 @@ async def heartbeat():
         # Send a heartbeat every 30 seconds (adjust as needed)
         await asyncio.sleep(30)
         # Check if the client is connected
-        if client.is_connected():
+        if client.is_ready():
             # Send a heartbeat to the gateway
             await client.ws.ping()
             print("Heartbeat sent")
