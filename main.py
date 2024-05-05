@@ -51,15 +51,23 @@ async def on_message(message: Message) -> None:
     await handle_message(message, client)
     
 async def heartbeat():
+    channel = client.get_channel(1236567271720357950)
+    if not channel:
+        print(f"Channel with ID {1236567271720357950} not found.")
+        return
     await client.wait_until_ready()
     while not client.is_closed():
         # Send a heartbeat every 30 seconds (adjust as needed)
         await asyncio.sleep(30)
         # Check if the client is connected
-        if client.is_ready():
-            # Send a heartbeat to the gateway
-            await client.ws.ping()
-            print("Heartbeat sent")
+        latency = round(client.latency * 1000)
+        try:
+            # Send a heartbeat message to the channel
+            await channel.send(f"Bot latency: {latency} ms")
+            # Log heartbeat
+            print("Heartbeat sent to channel")
+        except Exception as e:
+            print(f"Error sending heartbeat message: {e}")
     
 def main() -> None:
     client.run(token = TOKEN)
