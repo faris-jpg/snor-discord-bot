@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from responses import get_response
 import finance_handler as fh
+import asyncio
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
@@ -36,6 +37,7 @@ async def send_message(message: Message, client: Client) -> None:
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} has connected to Discord!')
+    client.loop.create_task(heartbeat())
 
 @client.event
 async def on_message(message: Message) -> None:
@@ -47,6 +49,17 @@ async def on_message(message: Message) -> None:
     channel: str = str(message.channel)
     print(f'{[{channel}]} {username}: "{user_message}"')
     await handle_message(message, client)
+    
+async def heartbeat():
+    await client.wait_until_ready()
+    while not client.is_closed():
+        # Send a heartbeat every 30 seconds (adjust as needed)
+        await asyncio.sleep(30)
+        # Check if the client is connected
+        if client.is_connected():
+            # Send a heartbeat to the gateway
+            await client.ws.ping()
+            print("Heartbeat sent")
     
 def main() -> None:
     client.run(token = TOKEN)
